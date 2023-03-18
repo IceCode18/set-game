@@ -14,16 +14,47 @@ class Game{
     var deck = [Card]()
     var field = [Card]()
     var selection = [Int]()
+    var maxFieldCards: Int
     
     //Constants
     final let maxSelect = 3
     final let numTests = 4
+    final let cardsPerDeal = 3
     
     //Test Cases
     enum matchType {
         case allSame
         case allDifferent
         case noMatch
+    }
+    
+    init(fieldCards: Int, startingCards: Int, numOfStyles:Int){
+        maxFieldCards = fieldCards
+        for n in 1...numOfStyles{
+            for c in 1...numOfStyles{
+                for sh in 1...numOfStyles{
+                    for sym in 1...numOfStyles{
+                        let card = createCard(number: n, color: c, shade: sh, symbol: sym)
+                        deck += [card]
+                        print(card)
+                    }
+                }
+            }
+        }
+        //deck.shuffle()
+        for _ in 1...startingCards{
+            field.append(deck.removeLast())
+            print(deck.count)
+        }
+        print(field[0])
+        print(field[1])
+        print(field[2])
+        chooseCard(at: 0)
+        chooseCard(at: 1)
+        chooseCard(at: 2)
+        chooseCard(at: 3)
+        
+        dealCards()
     }
     
     func testMatch(selectedCards: [Int]) -> Bool{
@@ -95,39 +126,40 @@ class Game{
             let index = selection.removeLast()
             field[index].isSelected = false
             if(field[index].isMatched){
-                print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
-                field.remove(at: index)
+                if(!deck.isEmpty){
+                    field[index] = deck.removeLast()
+                    print("Replaced field card position \(index) with card No. \(field[index].id)")
+                }else{
+                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
+                    field.remove(at: index)
+                }
             }
         }
     }
     
-    init(numOfStyles:Int, startingCards: Int){
-        for n in 1...numOfStyles{
-            for c in 1...numOfStyles{
-                for sh in 1...numOfStyles{
-                    for sym in 1...numOfStyles{
-                        let card = createCard(number: n, color: c, shade: sh, symbol: sym)
-                        deck += [card]
-                        print(card)                    }
-                }
+    func dealCards(){
+        if(selection.count == 3){
+            if(testMatch(selectedCards: selection)){
+                cleanSelection()
+            }else{
+                addCards()
+            }
+        }else{
+            addCards()
+        }
+        selection.removeAll()
+        print("Dealt Cards. Selection now has: \(selection.count)")
+    }
+    
+    func addCards(){
+        for _ in 1...cardsPerDeal{
+            if(field.count != maxFieldCards && !deck.isEmpty){
+                field.append(deck.removeLast())
+                print("Added Card ID: \(field[field.count-1].id) ")
             }
         }
-        //deck.shuffle()
-        for _ in 0...startingCards{
-            field.append(deck.removeLast())
-            print(deck.count)
-        }
-        print(field[0])
-        print(field[1])
-        print(field[2])
-        chooseCard(at: 0)
-        
-        chooseCard(at: 1)
-        
-        chooseCard(at: 2)
-        
-        chooseCard(at: 3)
     }
+    
     
     func createCard(number: Int,color: Int,shade: Int,symbol: Int) -> Card{
         return Card(cNumber: number,cColor: color,cShade: shade,cSymbol: symbol)

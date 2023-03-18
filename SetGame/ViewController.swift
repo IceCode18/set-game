@@ -14,15 +14,21 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       var game = Game(numOfStyles: 4, startingCards: 12)
+        var game = Game(fieldCards: 32, startingCards: 12, numOfStyles: 4)
+    }
+    
+    @IBOutlet weak var playerScore: UILabel!
+    
+    @IBOutlet weak var aiScore: UILabel!
+    
+    @IBAction func touchCard(_ sender: UIButton) {
+        
     }
     
     
-    //private(set) var bin = deck
+    @IBAction func dealCard(_ sender: UIButton) {
+    }
     
-   
-    
- 
     
 }
 
