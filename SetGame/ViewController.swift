@@ -56,7 +56,6 @@ class ViewController: UIViewController {
         guard let pseudoButton = recognizer.view as? CardView else { return }
         
         if let cardNumber = gameBoard.cardViews.firstIndex(of: pseudoButton){
-            print(cardNumber)
             game.chooseCard(at: cardNumber)
         }
         else{
@@ -98,7 +97,7 @@ class ViewController: UIViewController {
 
     
     private func updateViewFromModel(){
-        print("CardListCount: \(gameBoard.cardViews.count)")
+        //print("CardListCount: \(gameBoard.cardViews.count)")
         playerScore.text = "Player Score: \(game.playerScore)"
         aiScore.text = "AI Score: \(game.aiScore)"
         if(game.deck.isEmpty){
@@ -115,13 +114,13 @@ class ViewController: UIViewController {
         for index in game.field.indices{
             if(index < game.field.count){
                 let card = game.field[index]
-                print("Index \(index) CardViewCount: \(gameBoard.cardViews.count) FieldCount: \(game.field.count)")
+                //print("Index \(index) CardViewCount: \(gameBoard.cardViews.count) FieldCount: \(game.field.count)")
                 if (index < gameBoard.cardViews.count){
                     let pseudoButton = gameBoard.cardViews[index]
                     //print("Field: \(index) Field Count: \(game.field.count)")
                     
                     if card.isSelected{
-                        print("Card selected")
+                        //print("Card selected")
                         pseudoButton.layer.borderWidth = 4.0
                         pseudoButton.layer.borderColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
                     }else{
@@ -143,7 +142,7 @@ class ViewController: UIViewController {
             }
         }
         while(gameBoard.cardViews.count > game.field.count){
-            print("called!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
+            //print("called!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
             gameBoard.removeCardsAT(index: gameBoard.cardViews.count-1)
             //game.field.removeLast()
             //gameBoard.add(card: card, index: index)

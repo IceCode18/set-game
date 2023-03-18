@@ -27,7 +27,12 @@ class ConcentrationViewController: UIViewController {
     var viewBackgrounds = [#colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1),#colorLiteral(red: 0.2292556992, green: 0.02073439291, blue: 0.3487896697, alpha: 0.6267605634),#colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1),#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1),#colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1),#colorLiteral(red: 0.1234899883, green: 0.006919050485, blue: 0.3975452094, alpha: 0.7170109161)]
     var cardBackgroundChoice = #colorLiteral(red: 0.5014055371, green: 0.801168859, blue: 0.8344416022, alpha: 1)
     var viewBackgroundChoice = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
-    var themeCode = 0
+    var themeCode: Int? {
+        didSet{
+            setTheme()
+            updateViewFromModel()
+        }
+    }
     
     //instance variables are properties
     
@@ -91,14 +96,17 @@ class ConcentrationViewController: UIViewController {
     
     private func setTheme(){
         //Pick theme
-        let themeColor = cardBackgrounds[themeCode]
-        emojiChoices = emojiSets[themeCode]
-        cardBackgroundChoice = themeColor
-        flipCountLabel.textColor = themeColor
-        score.textColor = themeColor
-        reset.backgroundColor = themeColor
-        reset.titleLabel?.textColor = viewBackgrounds[themeCode]
-        view.backgroundColor = viewBackgrounds[themeCode]
+        if let index = themeCode{
+            let themeColor = cardBackgrounds[index]
+            emojiChoices = emojiSets[index]
+            emoji = [:]
+            cardBackgroundChoice = themeColor
+            flipCountLabel.textColor = themeColor
+            score.textColor = themeColor
+            reset.backgroundColor = themeColor
+            reset.titleLabel?.textColor = viewBackgrounds[index]
+            view.backgroundColor = viewBackgrounds[index]
+        }
     }
     
     

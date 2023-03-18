@@ -33,7 +33,7 @@ class GameBoardView: UIView {
             card.removeFromSuperview()
         }
         cardViews.removeAll()
-        print("Card View Count: \(cardViews.count)")
+        //print("Card View Count: \(cardViews.count)")
     }
     
     func redrawCardWith(card: Card, index: Int){

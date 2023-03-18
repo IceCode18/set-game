@@ -44,7 +44,7 @@ class Game{
                     for sym in 1...numOfStyles{
                         let card = createCard(number: n, color: c, shade: sh, symbol: sym)
                         deck += [card]
-                        print(card)
+                        //print(card)
                     }
                 }
             }
@@ -52,7 +52,7 @@ class Game{
         //deck.shuffle()
         for _ in 1...startingCards{
             field.append(deck.removeLast())
-            print(deck.count)
+            //print(deck.count)
         }
         
     }
@@ -95,7 +95,7 @@ class Game{
     }
     
     func chooseCard(at index: Int){
-        print("Field Count: \(field.count) Index: \(index)")
+        //print("Field Count: \(field.count) Index: \(index)")
         if(field[index].isSelected && selection.count != 3){
             removeFromSelection(index: index)
         }
@@ -166,7 +166,7 @@ class Game{
     }
     func cleanSelection(){
         selection.sort()
-        print("Selection Count: \(selection.count)")
+        //print("Selection Count: \(selection.count)")
         for _ in selection.indices{
             let index = selection.removeLast()
             field[index].isSelected = false
