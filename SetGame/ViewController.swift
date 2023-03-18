@@ -10,11 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private var game = Game(numOfStyles: 4)
+    //private var game = Game(numOfStyles: 4)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+       var game = Game(numOfStyles: 4, startingCards: 12)
     }
     
     

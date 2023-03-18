@@ -14,11 +14,13 @@ struct Card:CustomStringConvertible {
     var isMatched = false
     var isSelected = false
     var id: Int
+    var attributeCodes = [Int]()
     
+    var number: Int
     var color: Int
     var shade: Int
     var symbol: Int
-    var number: Int
+    
     
     private static var currentTotal = 0
     
@@ -30,9 +32,10 @@ struct Card:CustomStringConvertible {
     init(cNumber: Int, cColor: Int, cShade: Int, cSymbol: Int ) {
         self.id = Card.getID()
         self.number = cNumber
+        self.color = cColor
         self.shade = cShade
         self.symbol = cSymbol
-        self.color = cColor
+        self.attributeCodes = [cNumber,cColor,cShade,cSymbol]
     }
 }
 
