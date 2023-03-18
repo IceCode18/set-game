@@ -53,9 +53,7 @@ class ViewController: UIViewController {
             if (game.deck.count != 0){
                 let index = game.field.count - i
                 let card = game.field[index]
-                let cardView = CardView(frame: CGRect.zero)
-                cardView.setAttributes(card: card)
-                gameBoard.add(cardView: cardView)
+                gameBoard.add(card: card)
             }
         }
         updateViewFromModel()
@@ -110,11 +108,11 @@ class ViewController: UIViewController {
             hintButton.isEnabled = true
             hintButton.backgroundColor = #colorLiteral(red: 0.3333333433, green: 0.3333333433, blue: 0.3333333433, alpha: 1)
         }
-        for index in gameBoard.cardViews.indices{
-            let pseudoButton = gameBoard.cardViews[index]
-            if (game.field.indices.contains(index)){
+        for index in game.field.indices{
+            let card = game.field[index]
+            if (index < gameBoard.cardViews.count){
+                let pseudoButton = gameBoard.cardViews[index]
                 //print("Field: \(index) Field Count: \(game.field.count)")
-                let card = game.field[index]
                 
                 if card.isSelected{
                     print("Card selected")
@@ -123,20 +121,22 @@ class ViewController: UIViewController {
                 }else{
                     pseudoButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
                 }
-                if pseudoButton.isHidden { pseudoButton.isHidden = false}
+                
                 if card.isMatched {
                     pseudoButton.layer.borderWidth = 4.0
                     pseudoButton.layer.borderColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
                 }
                 
-                pseudoButton.isHidden = false
+                gameBoard.redrawCardWith(card: card, index: index)
+                
                 if(game.deck.isEmpty && card.isMatched){
                     gameBoard.removeCardsAT(index: index)
                 }
+                
+            }else{
+                gameBoard.add(card: card)
             }
-            else{
-                gameBoard.removeCardsAT(index: index)
-            }
+         
         }
         //score.text = "Score: \(game.gameScore)"
 //        for index in gameBoard.cardViews.indices{
@@ -171,11 +171,8 @@ class ViewController: UIViewController {
     func resetGame(){
         game = Game(fieldCards: maxFieldCards, startingCards: startCards, numOfStyles: numStyles)
         gameBoard.resetCards()
-        //gameBoard = gameBoard()
         for card in game.field{
-            let cardView = CardView(frame: CGRect.zero)
-            cardView.setAttributes(card: card)
-            gameBoard.add(cardView: cardView)
+            gameBoard.add(card: card)
         }
         hintButton.backgroundColor = #colorLiteral(red: 0.3333333433, green: 0.3333333433, blue: 0.3333333433, alpha: 1)
         dealButton.backgroundColor = #colorLiteral(red: 0.3333333433, green: 0.3333333433, blue: 0.3333333433, alpha: 1)

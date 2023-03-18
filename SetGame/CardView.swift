@@ -10,11 +10,13 @@ import UIKit
 
 class CardView: UIView {
 
-    // MARK: Card properties
-    var number: Int = 1 { didSet { setNeedsDisplay() } }
-    var color: Int = 1 { didSet { setNeedsDisplay() } }
-    var shade: Int = 3 { didSet { setNeedsDisplay() } }
-    var symbol: Int = 3 { didSet { setNeedsDisplay() } }
+    //Card properties
+    var codes: [Int] = [1, 1, 1, 1] { didSet { setNeedsDisplay() } }
+    var number: Int { return codes[0] }//{ didSet { setNeedsDisplay() } }
+    var color: Int { return codes[1] }//{ didSet { setNeedsDisplay() } }
+    var shade: Int { return codes[2] }// { didSet { setNeedsDisplay() } }
+    var symbol: Int { return codes[3] }
+    
     
     //Constants
     final let widthScale: CGFloat = 0.90
@@ -54,7 +56,18 @@ class CardView: UIView {
     
     //Main Drawing Part
     override func draw(_ rect: CGRect) {
-        let path = UIBezierPath()
+        var path = UIBezierPath()
+       // let cardColor = self.backgroundColor
+       // path.move(to: <#T##CGPoint#>)
+        path.append(UIBezierPath(roundedRect: CGRect(x: figXmargin/2,
+                                                        y: figYmargin/2,
+                                                        width: bounds.size.width,
+                                                        height: bounds.size.height),
+                                    cornerRadius: 0))
+        self.backgroundColor?.setFill()
+        path.fill()
+        path.stroke()
+        path = UIBezierPath()
         
         for n in 0...number-1 {
             let margin: CGFloat
@@ -67,12 +80,12 @@ class CardView: UIView {
             let origin:CGFloat?
             
             switch(number){
-            case 2:
-                origin = (cardCenter.x - (figWidth + (margin * 2))) + (CGFloat(n * 2) * (figWidth + margin/2))
-            case 3:
-                origin = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
-            default:
-                origin = cardCenter.x - (figWidth/2)
+                case 2:
+                    origin = (cardCenter.x - (figWidth + (margin * 2))) + (CGFloat(n * 2) * (figWidth + margin/2))
+                case 3:
+                    origin = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
+                default:
+                    origin = cardCenter.x - (figWidth/2)
             }
             
             
@@ -177,11 +190,13 @@ class CardView: UIView {
     }
     
     func setAttributes(card: Card){
-        number = card.number
-        color = card.color
-        shade = card.shade
-        symbol = card.symbol
+        codes = card.attributeCodes
     }
 
+    
+    
+    
+    
    
 }
+
