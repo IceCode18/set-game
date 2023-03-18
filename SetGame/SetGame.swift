@@ -46,15 +46,6 @@ class Game{
             field.append(deck.removeLast())
             print(deck.count)
         }
-        print(field[0])
-        print(field[1])
-        print(field[2])
-        chooseCard(at: 0)
-        chooseCard(at: 1)
-        chooseCard(at: 2)
-        chooseCard(at: 3)
-        
-        dealCards()
     }
     
     func testMatch(selectedCards: [Int]) -> Bool{
