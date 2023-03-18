@@ -11,10 +11,10 @@ import UIKit
 class CardView: UIView {
 
     // MARK: Card properties
-    var number: Int = 3 { didSet { setNeedsDisplay() } }
-    var color: Int = 2 { didSet { setNeedsDisplay() } }
-    var shade: Int = 2 { didSet { setNeedsDisplay() } }
-    var symbol: Int = 3 { didSet { setNeedsDisplay() } }
+    var number: Int = 1 { didSet { setNeedsDisplay() } }
+    var color: Int = 1 { didSet { setNeedsDisplay() } }
+    var shade: Int = 1 { didSet { setNeedsDisplay() } }
+    var symbol: Int = 1 { didSet { setNeedsDisplay() } }
     
     //Constants
     final let widthScale: CGFloat = 0.90
@@ -63,15 +63,27 @@ class CardView: UIView {
             }else{
                 margin = figXmargin * 2
             }
-            let origin:CGFloat = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
+            
+            let origin:CGFloat?
+            
+            switch(number){
+            case 2:
+                origin = (cardCenter.x - (figWidth + (margin * 2))) + (CGFloat(n * 2) * (figWidth + margin/2))
+            case 3:
+                origin = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
+            default:
+                origin = cardCenter.x - (figWidth/2)
+            }
+            
+            
           
             switch(symbol){
                 case 2:
-                    diamonds(bezPath: path, count: CGFloat(number), originX: origin)
+                    diamonds(bezPath: path, count: CGFloat(number), originX: origin!)
                 case 3:
-                    squiggles(bezPath: path, count: CGFloat(number), originX: origin)
+                    squiggles(bezPath: path, count: CGFloat(number), originX: origin!)
                 default:
-                    ovals(bezPath: path, count: CGFloat(number), originX: origin)
+                    ovals(bezPath: path, count: CGFloat(number), originX: origin!)
             }
             
         }
@@ -83,7 +95,7 @@ class CardView: UIView {
         let colorFill: UIColor?
         switch(color){
             case 2:
-                colorFill = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+                colorFill = UIColor.red
             case 3:
                 colorFill = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
             default:
@@ -145,11 +157,15 @@ class CardView: UIView {
         
     }
     
-    func designateCard(card: Card){
-        number = card.number
-        color = card.color
-        shade = card.shade
-        symbol = card.symbol
+    func setAttributes(attribute: [Int]){
+//        number = card.number
+//        color = card.color
+//        shade = card.shade
+//        symbol = card.symbol
+        number = attribute[0]
+        color = attribute[1]
+        shade = attribute[2]
+        symbol = attribute[3]
     }
 
    

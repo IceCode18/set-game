@@ -9,6 +9,30 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    
+    @IBOutlet weak var gameBoard: GameBoardView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //TO BE EDITED
+        var cor = 0
+        for n in 1...4{
+            for c in 1...4{
+                
+                        cor += 1
+                        let attr = [n, c, 2, 3]
+                        let cardView = CardView(frame: CGRect.zero)
+                        cardView.setAttributes(attribute: attr)
+                        gameBoard.add(cardView: cardView)
+                        if(cor == 20){break}
+                        print(cor)
+                
+            }
+        }
+        // Do any additional setup after loading the view.
+    }
 //    
 //    //Constants
 //    final let startCards = 16

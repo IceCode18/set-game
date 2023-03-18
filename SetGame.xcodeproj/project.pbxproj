@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7782448222A6734A003E78CE /* GameBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7782448122A6734A003E78CE /* GameBoardView.swift */; };
 		77E38620229136E100EFDF4C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E3861F229136E100EFDF4C /* AppDelegate.swift */; };
 		77E38622229136E100EFDF4C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E38621229136E100EFDF4C /* ViewController.swift */; };
 		77E38625229136E100EFDF4C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77E38623229136E100EFDF4C /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7782448122A6734A003E78CE /* GameBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoardView.swift; sourceTree = "<group>"; };
 		77E3861C229136E100EFDF4C /* SetGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SetGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77E3861F229136E100EFDF4C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		77E38621229136E100EFDF4C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				77E38621229136E100EFDF4C /* ViewController.swift */,
 				77E38623229136E100EFDF4C /* Main.storyboard */,
+				7782448122A6734A003E78CE /* GameBoardView.swift */,
 				77E386322291375400EFDF4C /* SetGame.swift */,
 				77E3913C22A50BFB00B65AF0 /* Grid.swift */,
 				77E386342291377300EFDF4C /* Card.swift */,
@@ -160,6 +163,7 @@
 				77E38620229136E100EFDF4C /* AppDelegate.swift in Sources */,
 				77E3913D22A50BFB00B65AF0 /* Grid.swift in Sources */,
 				77E3913F22A50DE700B65AF0 /* CardView.swift in Sources */,
+				7782448222A6734A003E78CE /* GameBoardView.swift in Sources */,
 				77E386352291377300EFDF4C /* Card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
