@@ -14,14 +14,19 @@ class Game{
     var deck = [Card]()
     var field = [Card]()
     var selection = [Int]()
+    
+    //Variables
     var maxFieldCards: Int
     var playerScore = 0
     var aiScore = 0
+    var previous = CFAbsoluteTimeGetCurrent()
+    
     
     //Constants
     final let maxSelect = 3
     final let numTests = 4
     final let cardsPerDeal = 3
+    final let scorePoint = 5
     
     //Test Cases
     enum matchType {
@@ -43,11 +48,12 @@ class Game{
                 }
             }
         }
-        //deck.shuffle()
+        deck.shuffle()
         for _ in 1...startingCards{
             field.append(deck.removeLast())
             print(deck.count)
         }
+        
     }
     
     func testMatch(selectedCards: [Int]) -> Bool{
@@ -59,10 +65,10 @@ class Game{
             var m = 0
             for i in selectedCards{
                 let code = field[i].attributeCodes[codeIndex]
-                print("M: \(m) Code: \(code)")
+                //print("M: \(m) Code: \(code)")
                 (m == code) ? (counter += 1) : (counter -= 1)
                 m = code
-                print("Counter: \(counter)")
+                //print("Counter: \(counter)")
                 
             }
             if(counter == maxSelect-2){
@@ -74,12 +80,12 @@ class Game{
             switch testPassed {
             case .allSame:
                 match += 1
-                print("The types are all the same!")
+                //print("The types are all the same!")
             case .allDifferent:
                 match += 1
-                print("The types are all different!")
+                //print("The types are all different!")
             default:
-                print("No Match")
+                //print("No Match")
                 break
             }
         }
@@ -88,10 +94,11 @@ class Game{
     }
     
     func chooseCard(at index: Int){
+        print("Field Count: \(field.count) Index: \(index)")
         if(field[index].isSelected && selection.count != 3){
             removeFromSelection(index: index)
         }
-        else if !(field[index].isSelected){
+        else if ( !(field[index].isSelected) && !(field[index].isMatched) ){
             field[index].isSelected = true
             selection.append(index)
             print("Card \(index) is stored in Selection. Card ID: \(field[index].id).")
@@ -101,10 +108,14 @@ class Game{
                         field[i].isMatched = true
                         print("Card No.\(field[i].id) is matched.")
                     }
-                    playerScore += 5
+                    let current = CFAbsoluteTimeGetCurrent()
+                    var bonus = Int((8-(current-previous)).rounded())
+                    if(bonus<0){bonus=0}
+                    playerScore += (scorePoint.full + bonus)
+                    previous = current
                     print("Score!")
                 }else{
-                    playerScore -= 3
+                    playerScore += scorePoint.reduction
                     print("Score Reduction!")
                 }
             }
@@ -112,7 +123,7 @@ class Game{
                 let fourthSelect = field[selection.removeLast()]
                 cleanSelection()
                 selection.append(field.firstIndex(of: fourthSelect)!)
-                print("Card \(index) is stored in Selection. Card ID: \(field[selection.head].id).")
+                print("Card \(index) is stored in Selection. Card ID: \(fourthSelect.id).")
             }
         }
     }
@@ -132,7 +143,10 @@ class Game{
             field[c].isSelected = false
         }
         selection.removeAll()
-        print("Dealt Cards. Selection now has: \(selection.count)")
+        //print("Dealt Cards. Selection now has: \(selection.count)")
+        if(!(findMatch().isEmpty)){
+            playerScore += scorePoint.penalty
+        }
     }
     
     func addCards(){
@@ -159,47 +173,52 @@ class Game{
                 if(!deck.isEmpty){
                     field[index] = deck.removeLast()
                     print("Replaced field card position \(index) with card No. \(field[index].id)")
-                }else{
-                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
-                    field.remove(at: index)
                 }
+//                else{
+//                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
+//                    field.remove(at: index)
+//                    //Here
+//                }
             }
         }
     }
     
-    func findMatch(byPlayer: Bool) -> Bool{
+    func findMatch() -> [Int]{
         //Search for the first occurence of a match
         for i in field.indices{
             for j in field.indices{
                 for k in field.indices{
-                    if( (i != j) && (i != k) && (j != k) ){
-                        if(testMatch(selectedCards: [i,j,k])){
-                            cleanSelection()
-                            field[i].isMatched = true
-                            field[k].isMatched = true
-                            field[j].isMatched = true
-                            
-                            print("Card No.\(field[i].id) is matched.")
-                            print("Card No.\(field[j].id) is matched.")
-                            print("Card No.\(field[k].id) is matched.")
-                            
-                            selection = [i,j,k]
-                            cleanSelection()
-                            if(byPlayer){
-                                playerScore += 5
-                                print("Score!")
+                    if( (i != j) && (i != k) && (j != k)){
+                        if( !(field[i].isMatched) && !(field[j].isMatched) && !(field[k].isMatched)){
+                            if(testMatch(selectedCards: [i,j,k])){
+                                return [i,j,k]
                             }
-                            else{
-                                aiScore += 5
-                                print("AI Scores!")
-                            }
-                            return true
                         }
+                        
                     }
                 }
             }
         }
-        return false
+        return [Int]()
+        
+    }
+    
+    func hintActivated(byPlayer: Bool, matchingCards: [Int]) {
+        cleanSelection()
+        for index in matchingCards{
+            field[index].isMatched = true
+            print("Card No.\(field[index].id) is matched.")
+        }
+        selection = matchingCards
+        cleanSelection()
+        if(byPlayer){
+            playerScore += scorePoint.full
+            print("Score!")
+        }
+        else{
+            aiScore += scorePoint.full
+            print("AI Scores! Score: \(aiScore)")
+        }
     }
     
     
@@ -210,11 +229,14 @@ class Game{
     
 }
 
-extension Array{
-    var tail: Int{
-        return self.endIndex-1
+extension Int{
+    var full: Int{
+        return self
     }
-    var head: Int{
-        return 0
+    var reduction: Int{
+        return 2-self
+    }
+    var penalty: Int{
+        return 3-self
     }
 }
