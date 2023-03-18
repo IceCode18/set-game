@@ -9,12 +9,20 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    private var game = Game(numOfStyles: 4)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+       
     }
-
-
+    
+    
+    //private(set) var bin = deck
+    
+   
+    
+ 
+    
 }
 
