@@ -20,6 +20,8 @@ class CardView: UIView {
     var symbol: Int { return codes[3] }
     
     var viewIndex: Int?
+    var isFaceUp = false { didSet { setNeedsDisplay() } }
+
     
     //Constants
     final let widthScale: CGFloat = 0.90
@@ -59,66 +61,65 @@ class CardView: UIView {
     
     //Main Drawing Part
     override func draw(_ rect: CGRect) {
-        var path = UIBezierPath()
-       // let cardColor = self.backgroundColor
-       // path.move(to: <#T##CGPoint#>)
-        path.append(UIBezierPath(roundedRect: CGRect(x: figXmargin/2,
-                                                        y: figYmargin/2,
-                                                        width: bounds.size.width,
-                                                        height: bounds.size.height),
-                                    cornerRadius: 0))
-        self.backgroundColor?.setFill()
-        path.fill()
-        path.stroke()
-        path = UIBezierPath()
-        
-        for n in 0...number-1 {
-            let margin: CGFloat
-            if n == 0 {
-                margin = figXmargin
-            }else{
-                margin = figXmargin * 2
-            }
+        if isFaceUp {
+            var path = UIBezierPath()
+            path.append(UIBezierPath(roundedRect: CGRect(x: figXmargin/2,
+                                                         y: figYmargin/2,
+                                                         width: bounds.size.width,
+                                                         height: bounds.size.height),
+                                     cornerRadius: 0))
+            self.backgroundColor?.setFill()
+            path.fill()
+            path.stroke()
+            path = UIBezierPath()
             
-            let origin:CGFloat?
-            
-            switch(number){
+            for n in 0...number-1 {
+                let margin: CGFloat
+                if n == 0 {
+                    margin = figXmargin
+                }else{
+                    margin = figXmargin * 2
+                }
+                
+                let origin:CGFloat?
+                
+                switch(number){
                 case 2:
                     origin = (cardCenter.x - (figWidth + (margin * 2))) + (CGFloat(n * 2) * (figWidth + margin/2))
                 case 3:
                     origin = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
                 default:
                     origin = cardCenter.x - (figWidth/2)
-            }
-            
-            
-          
-            switch(symbol){
+                }
+                
+                
+                
+                switch(symbol){
                 case 2:
                     diamonds(bezPath: path, count: CGFloat(number), originX: origin!)
                 case 3:
                     squiggles(bezPath: path, count: CGFloat(number), originX: origin!)
                 default:
                     ovals(bezPath: path, count: CGFloat(number), originX: origin!)
+                }
+                
             }
             
-        }
-        
-        path.lineCapStyle = .round
-        path.lineWidth = lineThickness
-        
-        //pick a color
-        let colorFill: UIColor?
-        switch(color){
+            path.lineCapStyle = .round
+            path.lineWidth = lineThickness
+            
+            //pick a color
+            let colorFill: UIColor?
+            switch(color){
             case 2:
                 colorFill = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
             case 3:
                 colorFill = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
             default:
                 colorFill = #colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1)
-        }
-        
-        switch(shade){
+            }
+            
+            switch(shade){
             case 2:
                 colorFill!.setFill()
                 path.fill()
@@ -126,14 +127,24 @@ class CardView: UIView {
                 path.addClip()
                 addStripes(bezPath: path)
                 colorFill!.setStroke()
-            
+                
             default:
                 colorFill!.setStroke()
+            }
+            
+            path.stroke()
+        }else{
+            let path = UIBezierPath()
+            path.append(UIBezierPath(roundedRect: CGRect(x: figXmargin/2,
+                                                         y: figYmargin/2,
+                                                         width: bounds.size.width,
+                                                         height: bounds.size.height),
+                                     cornerRadius: 0))
+            let colorFill = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            colorFill.setFill()
+            path.fill()
+            path.stroke()
         }
-        
-        path.stroke()
-        
-        
     }
     
     func squiggles(bezPath: UIBezierPath, count: CGFloat, originX: CGFloat){

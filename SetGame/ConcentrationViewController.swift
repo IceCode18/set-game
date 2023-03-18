@@ -67,7 +67,7 @@ class ConcentrationViewController: UIViewController {
     override func viewDidLoad() {
         setTheme()
         updateViewFromModel()
-        
+        flipCountLabel.textColor = cardBackgrounds[1]
     }
     
     private func updateViewFromModel(){
@@ -97,14 +97,16 @@ class ConcentrationViewController: UIViewController {
     private func setTheme(){
         //Pick theme
         if let index = themeCode{
+            print("Theme Index \(index)")
+            print("Theme Count \(cardBackgrounds.count)")
             let themeColor = cardBackgrounds[index]
             emojiChoices = emojiSets[index]
             emoji = [:]
             cardBackgroundChoice = themeColor
-            flipCountLabel.textColor = themeColor
-            score.textColor = themeColor
-            reset.backgroundColor = themeColor
-            reset.titleLabel?.textColor = viewBackgrounds[index]
+            flipCountLabel?.textColor = themeColor
+            score?.textColor = themeColor
+            reset?.backgroundColor = themeColor
+            reset?.titleLabel?.textColor = viewBackgrounds[index]
             view.backgroundColor = viewBackgrounds[index]
         }
     }

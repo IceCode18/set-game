@@ -21,6 +21,8 @@ class ViewController: UIViewController {
     lazy var game: Game = Game(fieldCards: maxFieldCards, startingCards: startCards, numOfStyles: numStyles)
     var timer: Timer?
     var aiTurn = 0
+    lazy var animator = UIDynamicAnimator(referenceView: view)
+    lazy var bounce = BouncingAnimation(in: animator)
     
     @IBOutlet weak var gameBoard: GameBoardView!
     
@@ -31,6 +33,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var aiScore: UILabel!
     
     @IBOutlet weak var dealButton: UIButton!
+    
+    @IBOutlet weak var discardPile: UIButton!
     
     @IBOutlet weak var hintButton: UIButton!
     
@@ -70,7 +74,7 @@ class ViewController: UIViewController {
     }
     
     @objc func onRotate(_ recognizer: UITapGestureRecognizer) {
-        if (recognizer.view as? GameBoardView) != nil {shuffle()} else { return }
+        if (recognizer.view as? GameBoardView) != nil && recognizer.state == .ended {shuffle()} else { return }
     }
     
     
@@ -97,9 +101,10 @@ class ViewController: UIViewController {
 
     
     private func updateViewFromModel(){
+        var matchFound = false
         //print("CardListCount: \(gameBoard.cardViews.count)")
         playerScore.text = "Player Score: \(game.playerScore)"
-        aiScore.text = "AI Score: \(game.aiScore)"
+        //aiScore.text = "AI Score: \(game.aiScore)"
         if(game.deck.isEmpty){
             dealButton.backgroundColor = #colorLiteral(red: 0.3176470697, green: 0.07450980693, blue: 0.02745098062, alpha: 1)
             dealButton.isEnabled = false
@@ -127,25 +132,68 @@ class ViewController: UIViewController {
                         pseudoButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
                     }
                     
-                    if card.isMatched {
+                    if card.isMatched{
                         pseudoButton.layer.borderWidth = 4.0
                         pseudoButton.layer.borderColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
+                        pseudoButton.alpha = 0
+                        matchFound = true
                     }
-                    
-                    gameBoard.redrawCardWith(card: card, index: index)
-                    
-                    if(game.deck.isEmpty && card.isMatched){
-                        gameBoard.removeCardsAT(index: index)
-                    }
-                    
+//                    else{
+//                        gameBoard.redrawCardWith(card: card, index: index)
+//                    }
                 }
             }
         }
-        while(gameBoard.cardViews.count > game.field.count){
-            //print("called!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
-            gameBoard.removeCardsAT(index: gameBoard.cardViews.count-1)
-            //game.field.removeLast()
-            //gameBoard.add(card: card, index: index)
+        if(matchFound){
+            let newCardViews = gameBoard.cardViews.filter{ $0.alpha ==  0  }
+            bounceEffect(cards: newCardViews)
+            dealCards()
+        }
+
+        
+        
+    }
+    
+    func bounceEffect(cards: [CardView]){
+        var counter = 0
+        for pseudoButton in cards{
+            view.addSubview(pseudoButton)
+            pseudoButton.layer.zPosition = 99.0
+            pseudoButton.alpha = 1
+            self.bounce.addItem(pseudoButton)
+//            UIView.transition(
+//                with: pseudoButton,
+//                duration: 0.6,
+//                options: [.transitionFlipFromLeft],
+//                animations: {
+//                    pseudoButton.layer.zPosition = 99.0
+//                    pseudoButton.alpha = 1
+//                    self.bounce.addItem(pseudoButton)
+//                            }
+//            )
+        }
+        _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            counter += 1
+            if counter == 4 {
+                for pseudoButton in cards{
+                    self.bounce.removeItem(pseudoButton)
+                    UIViewPropertyAnimator.runningPropertyAnimator(
+                        withDuration: 1.0,
+                        delay: 0,
+                        options: [.curveEaseIn],
+                        animations: {
+                            print("EXEC")
+                            pseudoButton.frame = self.gameBoard.deckFrame
+                            
+                        },
+                        completion: {
+                            position in
+                            self.gameBoard.removeCardView(card: pseudoButton)
+                        }
+                    )
+                }
+                timer.invalidate()
+            }
         }
     }
     
@@ -178,19 +226,31 @@ class ViewController: UIViewController {
     func shuffle(){
         game.shuffleField()
         updateViewFromModel()
+        let set = gameBoard.cardViews
+        gameBoard.shuffleEffect(cards: set)
     }
     
     func resetGame(){
         game = Game(fieldCards: maxFieldCards, startingCards: startCards, numOfStyles: numStyles)
+        gameBoard.deckFrame = CGRect(x: dealButton.frame.minX, y: gameBoard.frame.maxY-dealButton.frame.height, width: dealButton.frame.width, height: dealButton.frame.height)
+        print(gameBoard.deckFrame)
+        
         gameBoard.resetCards()
-        for card in game.field{
-            gameBoard.add(card: card, index: game.field.firstIndex(of: card)!)
+//        for card in game.field{
+//            gameBoard.add(card: card, index: game.field.firstIndex(of: card)!)
+//        }
+//        for views in gameBoard.cardViews{
+//            addGestureRecognizersToCard(views)
+//        }
+        while gameBoard.cardViews.count < startCards{
+            dealCards()
+            game.playerScore = 0
         }
-        for views in gameBoard.cardViews{
-            addGestureRecognizersToCard(views)
-        }
+        //gameBoard.layoutSubviews()
+        
+        
         hintButton.backgroundColor = #colorLiteral(red: 0.3333333433, green: 0.3333333433, blue: 0.3333333433, alpha: 1)
-        dealButton.backgroundColor = #colorLiteral(red: 0.3333333433, green: 0.3333333433, blue: 0.3333333433, alpha: 1)
+        dealButton.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         hintButton.isEnabled = true
         dealButton.isEnabled = true
         //aiFace.text = "🤔"

@@ -50,10 +50,10 @@ class Game{
             }
         }
         //deck.shuffle()
-        for _ in 1...startingCards{
-            field.append(deck.removeLast())
+        //for _ in 1...startingCards{
+        //    field.append(deck.removeLast())
             //print(deck.count)
-        }
+        //}
         
     }
     
@@ -121,29 +121,18 @@ class Game{
                 }
             }
             if(selection.count > maxSelect){
-                let fourthSelect = field[selection.removeLast()]
                 cleanSelection()
-                selection.append(field.firstIndex(of: fourthSelect)!)
-                print("Card \(index) is stored in Selection. Card ID: \(fourthSelect.id).")
+                selection.append(index)
+                field[index].isSelected = true
+                print("Card \(index) is stored in Selection. Card ID: \(field[index].id).")
             }
         }
     }
     
     func dealCards(){
-        if(selection.count == 3){
-            if(testMatch(selectedCards: selection)){
-                cleanSelection()
-            }else{
-                addCards()
-            }
-        }else{
-            addCards()
-        }
-        
-        for c in selection{
-            field[c].isSelected = false
-        }
-        selection.removeAll()
+        cleanSelection()
+        removeMatches()
+        addCards()
         //print("Dealt Cards. Selection now has: \(selection.count)")
         if(!(findMatch().isEmpty)){
             playerScore += scorePoint.penalty
@@ -164,22 +153,24 @@ class Game{
             selection.remove(at: selection.firstIndex(of: index)!)
         }
     }
+    
     func cleanSelection(){
-        selection.sort()
-        //print("Selection Count: \(selection.count)")
-        for _ in selection.indices{
-            let index = selection.removeLast()
-            field[index].isSelected = false
-            if(field[index].isMatched){
-                if(!deck.isEmpty){
-                    field[index] = deck.removeLast()
-                    print("Replaced field card position \(index) with card No. \(field[index].id)")
-                }
-                else{
-                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
-                    field.remove(at: index)
-                    //Here
-                }
+        for c in selection{
+            field[c].isSelected = false
+        }
+        selection.removeAll()
+    }
+    func removeMatches(){
+        var matches = [Card]()
+        for card in field{
+            if card.isMatched{
+                matches.append(card)
+            }
+        }
+        for matchedCard in matches{
+            if let matchedCardIndex = field.firstIndex(of: matchedCard){
+                print("Removed card at position \(matchedCardIndex) from the field. Card ID: \(field[matchedCardIndex].id).")
+                field.remove(at: matchedCardIndex)
             }
         }
     }
@@ -213,8 +204,8 @@ class Game{
             field[index].isMatched = true
             print("Card No.\(field[index].id) is matched.")
         }
-        selection = matchingCards
-        cleanSelection()
+        //selection = matchingCards
+        //cleanSelection()
         if(byPlayer){
             playerScore += scorePoint.full
             print("Score!")
