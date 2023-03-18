@@ -10,12 +10,12 @@ import UIKit
 
 class GameBoardView: UIView {
 
-    private(set) var cardViews = [CardView](){didSet { setNeedsDisplay() }}
+    /*private(set) */var cardViews = [CardView](){didSet { setNeedsDisplay() }}
     private var grid = Grid(layout: .aspectRatio((5.0/3.0)))
     
-    func add(card: Card){
+    func add(card: Card, index: Int){
         let cardView = CardView(frame: CGRect.zero)
-        cardView.setAttributes(card: card)
+        cardView.setAttributes(card: card, newIndex: index)
         cardViews.append(cardView)
         addSubview(cardView)
         setNeedsLayout()
@@ -23,9 +23,9 @@ class GameBoardView: UIView {
     
     
     func removeCardsAT(index: Int){
-        //cardViews[index].removeFromSuperview()
-        //cardViews.remove(at: index)
-        cardViews[index].isHidden = true
+        cardViews[index].removeFromSuperview()
+        cardViews.remove(at: index)
+        //cardViews[index].isHidden = true
     }
     
     func resetCards(){
@@ -38,7 +38,7 @@ class GameBoardView: UIView {
     
     func redrawCardWith(card: Card, index: Int){
         cardViews[index].clearsContextBeforeDrawing = true
-        cardViews[index].setAttributes(card: card)
+        cardViews[index].setAttributes(card: card, newIndex: index)
     }
     
     override func layoutSubviews() {

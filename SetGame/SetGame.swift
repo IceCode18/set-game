@@ -20,7 +20,8 @@ class Game{
     var playerScore = 0
     var aiScore = 0
     var previous = CFAbsoluteTimeGetCurrent()
-    
+    var player = "P1"
+    //var turn = 0
     
     //Constants
     final let maxSelect = 3
@@ -43,15 +44,15 @@ class Game{
                     for sym in 1...numOfStyles{
                         let card = createCard(number: n, color: c, shade: sh, symbol: sym)
                         deck += [card]
-                        //print(card)
+                        print(card)
                     }
                 }
             }
         }
-        deck.shuffle()
+        //deck.shuffle()
         for _ in 1...startingCards{
             field.append(deck.removeLast())
-            //print(deck.count)
+            print(deck.count)
         }
         
     }
@@ -80,10 +81,10 @@ class Game{
             switch testPassed {
             case .allSame:
                 match += 1
-                //print("The types are all the same!")
+            //print("The types are all the same!")
             case .allDifferent:
                 match += 1
-                //print("The types are all different!")
+            //print("The types are all different!")
             default:
                 //print("No Match")
                 break
@@ -147,7 +148,6 @@ class Game{
         if(!(findMatch().isEmpty)){
             playerScore += scorePoint.penalty
         }
-        print("Cards in Deck: \(deck.count)")
     }
     
     func addCards(){
@@ -175,11 +175,11 @@ class Game{
                     field[index] = deck.removeLast()
                     print("Replaced field card position \(index) with card No. \(field[index].id)")
                 }
-//                else{
-//                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
-//                    field.remove(at: index)
-//                    //Here
-//                }
+                else{
+                    print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
+                    field.remove(at: index)
+                    //Here
+                }
             }
         }
     }
@@ -202,6 +202,9 @@ class Game{
         }
         return [Int]()
         
+    }
+    func shuffleField(){
+        field.shuffle()
     }
     
     func hintActivated(byPlayer: Bool, matchingCards: [Int]) {

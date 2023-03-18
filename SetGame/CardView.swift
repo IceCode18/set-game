@@ -11,12 +11,15 @@ import UIKit
 class CardView: UIView {
 
     //Card properties
+    @IBInspectable
     var codes: [Int] = [1, 1, 1, 1] { didSet { setNeedsDisplay() } }
+    
     var number: Int { return codes[0] }//{ didSet { setNeedsDisplay() } }
     var color: Int { return codes[1] }//{ didSet { setNeedsDisplay() } }
     var shade: Int { return codes[2] }// { didSet { setNeedsDisplay() } }
     var symbol: Int { return codes[3] }
     
+    var viewIndex: Int?
     
     //Constants
     final let widthScale: CGFloat = 0.90
@@ -189,8 +192,9 @@ class CardView: UIView {
         
     }
     
-    func setAttributes(card: Card){
+    func setAttributes(card: Card, newIndex: Int){
         codes = card.attributeCodes
+        viewIndex = newIndex
     }
 
     
