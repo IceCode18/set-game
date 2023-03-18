@@ -43,7 +43,7 @@ class Game{
                     for sym in 1...numOfStyles{
                         let card = createCard(number: n, color: c, shade: sh, symbol: sym)
                         deck += [card]
-                        print(card)
+                        //print(card)
                     }
                 }
             }
@@ -51,7 +51,7 @@ class Game{
         deck.shuffle()
         for _ in 1...startingCards{
             field.append(deck.removeLast())
-            print(deck.count)
+            //print(deck.count)
         }
         
     }
@@ -147,6 +147,7 @@ class Game{
         if(!(findMatch().isEmpty)){
             playerScore += scorePoint.penalty
         }
+        print("Cards in Deck: \(deck.count)")
     }
     
     func addCards(){

@@ -13,8 +13,8 @@ class CardView: UIView {
     // MARK: Card properties
     var number: Int = 1 { didSet { setNeedsDisplay() } }
     var color: Int = 1 { didSet { setNeedsDisplay() } }
-    var shade: Int = 1 { didSet { setNeedsDisplay() } }
-    var symbol: Int = 1 { didSet { setNeedsDisplay() } }
+    var shade: Int = 3 { didSet { setNeedsDisplay() } }
+    var symbol: Int = 3 { didSet { setNeedsDisplay() } }
     
     //Constants
     final let widthScale: CGFloat = 0.90
@@ -95,7 +95,7 @@ class CardView: UIView {
         let colorFill: UIColor?
         switch(color){
             case 2:
-                colorFill = UIColor.red
+                colorFill = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
             case 3:
                 colorFill = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
             default:
@@ -107,7 +107,10 @@ class CardView: UIView {
                 colorFill!.setFill()
                 path.fill()
             case 3:
+                path.addClip()
+                addStripes(bezPath: path)
                 colorFill!.setStroke()
+            
             default:
                 colorFill!.setStroke()
         }
@@ -146,6 +149,7 @@ class CardView: UIView {
         bezPath.addLine(to: CGPoint(x: originX + figWidth / 2, y: bottomBound))
         bezPath.addLine(to: CGPoint(x: originX + figWidth, y: cardCenter.y))
         bezPath.addLine(to: CGPoint(x: originX + figWidth / 2, y: upperBound))
+       
     }
     
     func ovals(bezPath: UIBezierPath, count: CGFloat, originX: CGFloat){
@@ -157,15 +161,26 @@ class CardView: UIView {
         
     }
     
-    func setAttributes(attribute: [Int]){
-//        number = card.number
-//        color = card.color
-//        shade = card.shade
-//        symbol = card.symbol
-        number = attribute[0]
-        color = attribute[1]
-        shade = attribute[2]
-        symbol = attribute[3]
+    func addStripes(bezPath: UIBezierPath){
+        let space:CGFloat = figHeight/6
+        let rightBounds = drawableRect.width
+        let lowerBounds = figHeight + figYmargin
+        let originX = figXmargin
+        var originY = figYmargin
+        
+        while(originY < lowerBounds){
+            bezPath.move(to: CGPoint(x: originX, y:  originY))
+            bezPath.addLine(to: CGPoint(x: rightBounds, y: originY))
+            originY += space
+        }
+        
+    }
+    
+    func setAttributes(card: Card){
+        number = card.number
+        color = card.color
+        shade = card.shade
+        symbol = card.symbol
     }
 
    
