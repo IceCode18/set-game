@@ -18,7 +18,7 @@ class CardView: UIView {
     
     //Constants
     final let widthScale: CGFloat = 0.90
-    final let heightScale: CGFloat = 0.80
+    final let heightScale: CGFloat = 0.50
    
     //Scalings
     private var drawableRect: CGRect {
@@ -64,7 +64,9 @@ class CardView: UIView {
                 margin = figXmargin * 2
             }
             let origin:CGFloat = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
-            squiggles(bezPath: path, count: CGFloat(number), originX: origin)
+            //squiggles(bezPath: path, count: CGFloat(number), originX: origin)
+            diamonds(bezPath: path, count: CGFloat(number), originX: origin)
+            //ovals(bezPath: path, count: CGFloat(number), originX: origin)
             print(origin)
             
         }
@@ -95,7 +97,25 @@ class CardView: UIView {
                       controlPoint2: CGPoint(x: originX + figWidth + curveXOffset, y: originY + figHeight / 3))
         
         bezPath.addLine(to: CGPoint(x: originX, y: originY))
-        
+    }
+    
+    func diamonds(bezPath: UIBezierPath, count: CGFloat, originX: CGFloat){
+        let halfHeight = figHeight/2
+        let upperBound = cardCenter.y - halfHeight
+        let bottomBound = cardCenter.y + halfHeight
+        bezPath.move(to: CGPoint(x: originX + figWidth / 2, y: upperBound))
+        bezPath.addLine(to: CGPoint(x: originX, y: cardCenter.y))
+        bezPath.addLine(to: CGPoint(x: originX + figWidth / 2, y: bottomBound))
+        bezPath.addLine(to: CGPoint(x: originX + figWidth, y: cardCenter.y))
+        bezPath.addLine(to: CGPoint(x: originX + figWidth / 2, y: upperBound))
+    }
+    
+    func ovals(bezPath: UIBezierPath, count: CGFloat, originX: CGFloat){
+        bezPath.append(UIBezierPath(roundedRect: CGRect(x: originX,
+                                                      y: figYmargin,
+                                                      width: figWidth,
+                                                      height: figHeight),
+                                  cornerRadius: figWidth))
         
     }
     
