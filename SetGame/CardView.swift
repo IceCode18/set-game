@@ -12,14 +12,15 @@ class CardView: UIView {
 
     // MARK: Card properties
     var number: Int = 3 { didSet { setNeedsDisplay() } }
-    var color: Int? { didSet { setNeedsDisplay() } }
-    var shade: Int? { didSet { setNeedsDisplay() } }
-    var symbol: Int? { didSet { setNeedsDisplay() } }
+    var color: Int = 2 { didSet { setNeedsDisplay() } }
+    var shade: Int = 2 { didSet { setNeedsDisplay() } }
+    var symbol: Int = 3 { didSet { setNeedsDisplay() } }
     
     //Constants
     final let widthScale: CGFloat = 0.90
-    final let heightScale: CGFloat = 0.50
-   
+    final let heightScale: CGFloat = 0.60
+    final let lineThickness: CGFloat = 3.0
+    
     //Scalings
     private var drawableRect: CGRect {
         let drawableWidth = bounds.size.width * widthScale
@@ -53,7 +54,6 @@ class CardView: UIView {
     
     //Main Drawing Part
     override func draw(_ rect: CGRect) {
-        let color = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
         let path = UIBezierPath()
         
         for n in 0...number-1 {
@@ -64,16 +64,42 @@ class CardView: UIView {
                 margin = figXmargin * 2
             }
             let origin:CGFloat = (figXmargin * 2) + ((figWidth + margin) * CGFloat(n))
-            //squiggles(bezPath: path, count: CGFloat(number), originX: origin)
-            diamonds(bezPath: path, count: CGFloat(number), originX: origin)
-            //ovals(bezPath: path, count: CGFloat(number), originX: origin)
-            print(origin)
+          
+            switch(symbol){
+                case 2:
+                    diamonds(bezPath: path, count: CGFloat(number), originX: origin)
+                case 3:
+                    squiggles(bezPath: path, count: CGFloat(number), originX: origin)
+                default:
+                    ovals(bezPath: path, count: CGFloat(number), originX: origin)
+            }
             
         }
         
         path.lineCapStyle = .round
-        path.lineWidth = 3.0
-        color.setStroke()
+        path.lineWidth = lineThickness
+        
+        //pick a color
+        let colorFill: UIColor?
+        switch(color){
+            case 2:
+                colorFill = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+            case 3:
+                colorFill = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+            default:
+                colorFill = #colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1)
+        }
+        
+        switch(shade){
+            case 2:
+                colorFill!.setFill()
+                path.fill()
+            case 3:
+                colorFill!.setStroke()
+            default:
+                colorFill!.setStroke()
+        }
+        
         path.stroke()
         
         
