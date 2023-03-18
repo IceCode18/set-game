@@ -15,6 +15,8 @@ class Game{
     var field = [Card]()
     var selection = [Int]()
     var maxFieldCards: Int
+    var playerScore = 0
+    var aiScore = 0
     
     //Constants
     final let maxSelect = 3
@@ -86,7 +88,10 @@ class Game{
     }
     
     func chooseCard(at index: Int){
-        if !(field[index].isSelected){
+        if(field[index].isSelected && selection.count != 3){
+            removeFromSelection(index: index)
+        }
+        else if !(field[index].isSelected){
             field[index].isSelected = true
             selection.append(index)
             print("Card \(index) is stored in Selection. Card ID: \(field[index].id).")
@@ -96,8 +101,10 @@ class Game{
                         field[i].isMatched = true
                         print("Card No.\(field[i].id) is matched.")
                     }
+                    playerScore += 5
                     print("Score!")
                 }else{
+                    playerScore -= 3
                     print("Score Reduction!")
                 }
             }
@@ -110,6 +117,38 @@ class Game{
         }
     }
     
+    func dealCards(){
+        if(selection.count == 3){
+            if(testMatch(selectedCards: selection)){
+                cleanSelection()
+            }else{
+                addCards()
+            }
+        }else{
+            addCards()
+        }
+        
+        for c in selection{
+            field[c].isSelected = false
+        }
+        selection.removeAll()
+        print("Dealt Cards. Selection now has: \(selection.count)")
+    }
+    
+    func addCards(){
+        for _ in 1...cardsPerDeal{
+            if(field.count != maxFieldCards && !deck.isEmpty){
+                field.append(deck.removeLast())
+                print("Added Card ID: \(field[field.count-1].id) ")
+            }
+        }
+    }
+    func removeFromSelection(index: Int){
+        if(field[index].isSelected){
+            field[index].isSelected = false
+            selection.remove(at: selection.firstIndex(of: index)!)
+        }
+    }
     func cleanSelection(){
         selection.sort()
         print("Selection Count: \(selection.count)")
@@ -128,27 +167,39 @@ class Game{
         }
     }
     
-    func dealCards(){
-        if(selection.count == 3){
-            if(testMatch(selectedCards: selection)){
-                cleanSelection()
-            }else{
-                addCards()
+    func findMatch(byPlayer: Bool) -> Bool{
+        //Search for the first occurence of a match
+        for i in field.indices{
+            for j in field.indices{
+                for k in field.indices{
+                    if( (i != j) && (i != k) && (j != k) ){
+                        if(testMatch(selectedCards: [i,j,k])){
+                            cleanSelection()
+                            field[i].isMatched = true
+                            field[k].isMatched = true
+                            field[j].isMatched = true
+                            
+                            print("Card No.\(field[i].id) is matched.")
+                            print("Card No.\(field[j].id) is matched.")
+                            print("Card No.\(field[k].id) is matched.")
+                            
+                            selection = [i,j,k]
+                            cleanSelection()
+                            if(byPlayer){
+                                playerScore += 5
+                                print("Score!")
+                            }
+                            else{
+                                aiScore += 5
+                                print("AI Scores!")
+                            }
+                            return true
+                        }
+                    }
+                }
             }
-        }else{
-            addCards()
         }
-        selection.removeAll()
-        print("Dealt Cards. Selection now has: \(selection.count)")
-    }
-    
-    func addCards(){
-        for _ in 1...cardsPerDeal{
-            if(field.count != maxFieldCards && !deck.isEmpty){
-                field.append(deck.removeLast())
-                print("Added Card ID: \(field[field.count-1].id) ")
-            }
-        }
+        return false
     }
     
     
