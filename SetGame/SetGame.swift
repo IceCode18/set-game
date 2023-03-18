@@ -19,44 +19,48 @@ class Game{
     final let maxSelect = 3
     final let numTests = 4
     
+    //Test Cases
     enum matchType {
         case allSame
         case allDifferent
         case noMatch
     }
     
-    func testMatch(cards: [Int]) -> Bool{
-        var match = false
+    func testMatch(selectedCards: [Int]) -> Bool{
+        var match = 0
         
         for codeIndex in 0...(numTests-1){
             var testPassed = matchType.noMatch
             var counter = 0
             var m = 0
-            for i in cards{
+            for i in selectedCards{
                 let code = field[i].attributeCodes[codeIndex]
+                print("M: \(m) Code: \(code)")
                 (m == code) ? (counter += 1) : (counter -= 1)
                 m = code
+                print("Counter: \(counter)")
+                
             }
-            if(counter == maxSelect-1){
+            if(counter == maxSelect-2){
                 testPassed = .allSame
             }
-            if(counter == (0-(maxSelect-1))){
+            if(counter == 0-maxSelect){
                 testPassed = .allDifferent
             }
-            print(counter)
             switch testPassed {
             case .allSame:
-                match = true
+                match += 1
                 print("The types are all the same!")
             case .allDifferent:
-                match = true
+                match += 1
                 print("The types are all different!")
             default:
-                match = false
                 print("No Match")
+                break
             }
         }
-        return match
+        if(match == numTests){return true}
+        return false
     }
     
     func chooseCard(at index: Int){
@@ -65,9 +69,10 @@ class Game{
             selection.append(index)
             print("Card \(index) is stored in Selection. Card ID: \(field[index].id).")
             if (selection.count == maxSelect){
-                if testMatch(cards: selection){
+                if testMatch(selectedCards: selection){
                     for i in selection{
                         field[i].isMatched = true
+                        print("Card No.\(field[i].id) is matched.")
                     }
                     print("Score!")
                 }else{
@@ -75,24 +80,23 @@ class Game{
                 }
             }
             if(selection.count > maxSelect){
-                var orderedSelection = [Int]()
-                
-                while (selection.count != 1){
-                    var maxID = -1
-                    for sel in selection{
-                        if(field[sel].id > maxID){
-                            //maxID
-                        }
-                        
-                    }
-                }
-                for _ in 1...maxSelect{
-                    let position = selection.remove(at: selection.head)
-                    print("Removed card at position \(position) from the field. Card ID: \(field[position].id).")
-                    field.remove(at: position)
-                    
-                }
-                
+                let fourthSelect = field[selection.removeLast()]
+                cleanSelection()
+                selection.append(field.firstIndex(of: fourthSelect)!)
+                print("Card \(index) is stored in Selection. Card ID: \(field[selection.head].id).")
+            }
+        }
+    }
+    
+    func cleanSelection(){
+        selection.sort()
+        print("Selection Count: \(selection.count)")
+        for _ in selection.indices{
+            let index = selection.removeLast()
+            field[index].isSelected = false
+            if(field[index].isMatched){
+                print("Removed card at position \(index) from the field. Card ID: \(field[index].id).")
+                field.remove(at: index)
             }
         }
     }
@@ -108,14 +112,20 @@ class Game{
                 }
             }
         }
-        deck.shuffle()
+        //deck.shuffle()
         for _ in 0...startingCards{
-            field.append(deck.remove(at: deck.tail))
+            field.append(deck.removeLast())
             print(deck.count)
         }
+        print(field[0])
+        print(field[1])
+        print(field[2])
         chooseCard(at: 0)
+        
         chooseCard(at: 1)
+        
         chooseCard(at: 2)
+        
         chooseCard(at: 3)
     }
     

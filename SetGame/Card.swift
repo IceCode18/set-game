@@ -8,7 +8,15 @@
 
 import Foundation
 
-struct Card:CustomStringConvertible {
+struct Card:CustomStringConvertible, Comparable {
+    static func < (lhs: Card, rhs: Card) -> Bool {
+       return lhs.id < rhs.id
+    }
+    
+    
+    static func == (lhs: Card, rhs: Card) -> Bool {
+        return lhs.id == rhs.id
+    }
     
     var description: String {return "\(number),\(color),\(shade),\(symbol)"}
     var isMatched = false
